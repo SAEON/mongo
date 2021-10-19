@@ -9,15 +9,25 @@ jobs:
   deploy:
     runs-on: github-runner.saeon.int
     steps:
-      - uses: actions/checkout@v2
+      - uses: SAEON/checkout@v2
         with:
           ref: next
 
-      - name: Copy source
-        run: |
-          ssh runner@mongo.saeon.int 'mkdir -p deploy/next'
-          scp src/next/* runner@mongo.saeon.int:deploy/next/
+      - name: (SCP) Copy Docker files to host
+        uses: SAEON/scp-action@master
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.HOST_SSH_PORT }}
+          source: "src/next/docker-compose.yml"
+          target: "deploy"
 
-      - name: Deploy stack
-        run: |
-          ssh runner@mongo.saeon.int 'sudo /opt/deploy-docker-stack.sh /home/runner/deploy/next/docker-compose.yml mongo_next'
+      - name: (SSH) Deploy Docker stack
+        uses: SAEON/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.HOST_SSH_PORT }}
+          script: sudo /opt/deploy-docker-stack.sh /home/runner/deploy/src/next/docker-compose.yml mongo_next
