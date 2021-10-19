@@ -22,10 +22,20 @@ visudo
 runner ALL=NOPASSWD: /opt/deploy-docker-stack.sh
 ```
 
-Create the deploy script
+Create the deploy script `/opt-deploy-docker-stack.sh` with the following content
 
 ```sh
-echo "docker stack deploy -c \$1 \$2" > /opt/deploy-docker-stack.sh
+#!/bin/sh
+echo "Deploying stack: $2"
+echo "Compose file: $1"
+
+export $(cat docker-compose.env) > /dev/null 2>&1;
+docker stack deploy -c $1 $2
+```
+
+Make sure the script has the correct permissions
+
+```sh
 chown root /opt/deploy-docker-stack.sh 
 chmod 755 /opt/deploy-docker-stack.sh
 ```

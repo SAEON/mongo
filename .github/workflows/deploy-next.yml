@@ -30,4 +30,7 @@ jobs:
           username: ${{ secrets.HOST_USERNAME }}
           password: ${{ secrets.HOST_PASSWORD }}
           port: ${{ secrets.HOST_SSH_PORT }}
-          script: sudo /opt/deploy-docker-stack.sh /home/runner/deploy/src/next/docker-compose.yml mongo_next
+          script: |
+            echo "MONGO_DB_USERNAME=${{ secrets.MONGO_DB_USERNAME }}" > src/next/docker-compose.env
+            echo "MONGO_DB_PASSWORD=${{ secrets.MONGO_DB_PASSWORD }}" >> src/next/docker-compose.env
+            sudo /opt/deploy-docker-stack.sh /home/runner/deploy/src/next/docker-compose.yml mongo_next

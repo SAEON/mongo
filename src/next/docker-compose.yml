@@ -30,7 +30,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_DB_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DB_PASSWORD
     volumes:
-      - mongo:/data/db/
+      - mongo_next:/data/db/
     ports:
       - 27117:27017
     networks:
