@@ -1,0 +1,38 @@
+version: '3.8'
+
+networks:
+  mongo_5:
+    name: mongo_5
+
+
+volumes:
+  mongo_5:
+    driver: local
+
+services:
+  mongo_5:
+    image: mongo:5.0.3
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: 'any'
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1.5G
+        reservations:
+          cpus: '0.25'
+          memory: 500M    
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_DB_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DB_PASSWORD
+    volumes:
+      - mongo:/data/db/
+    ports:
+      - 27117:27017
+    networks:
+      - mongo_5
+    command: --wiredTigerCacheSizeGB=2 --dbpath /data/db

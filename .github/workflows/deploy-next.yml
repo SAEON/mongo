@@ -1,0 +1,23 @@
+name: deployment@next
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  deploy:
+    runs-on: github-runner.saeon.int
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: next
+
+      - name: Copy source
+        run: |
+          ssh runner@mongo.saeon.int 'mkdir -p deploy/next'
+          scp src/next/* runner@mongo.saeon.int:deploy/next/
+
+      - name: Deploy stack
+        run: |
+          ssh runner@mongo.saeon.int 'sudo /opt/deploy-docker-stack.sh /home/runner/deploy/next/docker-compose.yml mongo_next'
