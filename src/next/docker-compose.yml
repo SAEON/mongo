@@ -4,7 +4,6 @@ networks:
   mongo_next:
     name: mongo_next
 
-
 volumes:
   mongo_next:
     driver: local
@@ -34,6 +33,8 @@ services:
       - mongo_next:/data/db/
     ports:
       - 27117:27017
+      - 27118:27018
+      - 27119:27019
     networks:
       - mongo_next
     command: --wiredTigerCacheSizeGB=2 --dbpath /data/db

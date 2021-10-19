@@ -27,12 +27,15 @@ services:
           cpus: '0.25'
           memory: 500M    
     environment:
+      - MONGO_INITDB_DATABASE=admin
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_DB_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DB_PASSWORD
     volumes:
-      - mongo:/data/db/
+      - mongo_5:/data/db/
     ports:
-      - 27117:27017
+      - 27217:27017
+      - 27218:27018
+      - 27219:27019
     networks:
       - mongo_5
     command: --wiredTigerCacheSizeGB=2 --dbpath /data/db
