@@ -31,4 +31,4 @@ chmod 755 /opt/deploy-docker-stack.sh
 ```
 
 ## Deploy
-Push to relevant branch to trigger server deployment
+Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment
