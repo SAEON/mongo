@@ -21,7 +21,7 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 1.5G
+          memory: 1G
         reservations:
           cpus: '0.25'
           memory: 500M    
@@ -37,4 +37,4 @@ services:
       - 27119:27019
     networks:
       - mongo_next
-    command: --wiredTigerCacheSizeGB=2 --dbpath /data/db
+    command: --wiredTigerCacheSizeGB=0.5 --dbpath /data/db

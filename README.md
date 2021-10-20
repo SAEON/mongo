@@ -47,6 +47,58 @@ Push to relevant branch to trigger server deployment, or to `main` branch to upd
 The root user for the database is configured on deployment. Add databases and users for each application manually
 
 ```sh
-docker container exec -it <container name> mongosh
+docker container exec -it 2212 mongosh -u root -p <root password> --authenticationDatabase admin
+use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
+```
+
+## Database management
+### Automate backup process
+### Taking and restoring backups
+#### Take a backup
+```sh
+# Navigate to home directory as a non-root uer
+# (so that the dynamic volume mount works)
+cd ~
+
+docker run \
+  --net=catalogue_default \
+  -v /home/$USER:/mongo-bak \
+  --rm \
+  mongo:5.0.3 \ # NOTE - use the same Image version as the container was built from
+  sh -c \
+  "mongodump \
+    --uri=<mongo URI> \
+    -u=root \
+    -p=<password> \
+    --authenticationDatabase=admin \
+    -d=<database> \
+    --archive \
+    --gzip \
+    > \
+    /mongo-bak/mongo-backup.archive"
+```
+
+#### Restore a backup
+This command assumes a backup taken with the above command
+```sh
+# Navigate to home directory as a non-root uer
+# (so that the dynamic volume mount works)
+cd ~
+
+docker run \
+  -i \
+  --net=catalogue_default \
+  -v /home/$USER:/mongo-bak \
+  --rm \
+  mongo:5.0.3 \ # NOTE - use the same Image version as the container was built from
+  sh -c \
+  "mongorestore \
+    --uri=<mongo URI> \
+    -u=root \
+    -p=<password> \
+    --authenticationDatabase=admin \
+    --gzip \
+    --archive=/mongo-bak/mongo-backup.archive \
+    --nsInclude=<database>.*"
 ```
