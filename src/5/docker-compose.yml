@@ -27,9 +27,9 @@ services:
           cpus: '0.25'
           memory: 500M    
     environment:
-      - MONGO_INITDB_DATABASE=admin
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_DB_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DB_PASSWORD
+      - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
     volumes:
       - mongo_5:/data/db/
     ports:

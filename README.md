@@ -49,5 +49,5 @@ Configure the root user for the Mongo server
 ```sh
 docker container exec -it <container name> mongo
 use admin
-db.createUser({user: "<user name>", pwd: "pwd", roles: ["root"]})
+db.createUser({user: "root", pwd: "<your very strong password>", roles: ["root"]})
 ```

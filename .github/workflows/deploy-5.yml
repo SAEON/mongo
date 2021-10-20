@@ -30,4 +30,8 @@ jobs:
           username: ${{ secrets.HOST_USERNAME }}
           password: ${{ secrets.HOST_PASSWORD }}
           port: ${{ secrets.HOST_SSH_PORT }}
-          script: sudo /opt/deploy-docker-stack.sh /home/runner/deploy/src/5/docker-compose.yml mongo_5
+          script: |
+            echo "MONGO_INITDB_DATABASE={{ secrets.MONGO_INITDB_DATABASE }}" > /home/runner/deploy/src/5/docker-compose.env
+            echo "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_INITDB_ROOT_USERNAME }}" >> /home/runner/deploy/src/5/docker-compose.env
+            echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}" >> /home/runner/deploy/src/5/docker-compose.env
+            sudo /opt/deploy-docker-stack.sh /home/runner/deploy/src/5/docker-compose.yml mongo_5
