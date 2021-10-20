@@ -3,7 +3,8 @@ version: '3.8'
 networks:
   mongo_5:
     name: mongo_5
-
+    driver: overlay
+    attachable: true
 
 volumes:
   mongo_5:

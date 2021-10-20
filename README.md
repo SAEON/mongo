@@ -40,6 +40,12 @@ chown root /opt/deploy-docker-stack.sh
 chmod 755 /opt/deploy-docker-stack.sh
 ```
 
+## Server administration
+Add the following to the root crontab
+```
+0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
+```
+
 ## Deploy
 Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
 
@@ -54,6 +60,16 @@ db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", 
 
 ## Database management
 ### Automate backup process
+Add the following to the crontab for each database you want to have backed up
+
+```
+# Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
+0 0 * * * docker run --net=<Docker network> -v /opt/dbak:/dbak --rm mongo:5.0.2 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
+
+# Prune backups older than 90 days
+0 0 * * 0 find /opt/dbak/ -mtime + 90 -type -f -delete
+```
+
 ### Taking and restoring backups
 #### Take a backup
 ```sh
@@ -62,13 +78,13 @@ db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", 
 cd ~
 
 docker run \
-  --net=catalogue_default \
+  --net=<mongo container network> \
   -v /home/$USER:/mongo-bak \
   --rm \
-  mongo:5.0.3 \ # NOTE - use the same Image version as the container was built from
+  <mongo image name>
   sh -c \
   "mongodump \
-    --uri=<mongo URI> \
+    --uri=mongodb://<container id>:27017 \
     -u=root \
     -p=<password> \
     --authenticationDatabase=admin \
@@ -88,17 +104,19 @@ cd ~
 
 docker run \
   -i \
-  --net=catalogue_default \
+  --net=<mongo container network>  \
   -v /home/$USER:/mongo-bak \
   --rm \
-  mongo:5.0.3 \ # NOTE - use the same Image version as the container was built from
+  <mongo image name> \
   sh -c \
   "mongorestore \
-    --uri=<mongo URI> \
+    --uri=mongodb://<container id>:27017 \
     -u=root \
     -p=<password> \
     --authenticationDatabase=admin \
     --gzip \
     --archive=/mongo-bak/mongo-backup.archive \
-    --nsInclude=<database>.*"
+    --nsFrom=<from db in bak>.* \
+    --nsInclude=<from db in bak>.* \
+    --nsTo=<target db>.*" 
 ```

@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
     "adduser",
+    "dbak",
     "mkdir",
     "mongodump",
     "mongosh",
-    "NOPASSWD"
+    "NOPASSWD",
+    "pswd"
   ]
 }

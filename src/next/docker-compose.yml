@@ -3,6 +3,8 @@ version: '3.8'
 networks:
   mongo_next:
     name: mongo_next
+    driver: overlay
+    attachable: true
 
 volumes:
   mongo_next:
@@ -21,7 +23,7 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 1G
+          memory: 1.5G
         reservations:
           cpus: '0.25'
           memory: 500M    
@@ -37,4 +39,4 @@ services:
       - 27119:27019
     networks:
       - mongo_next
-    command: --wiredTigerCacheSizeGB=0.5 --dbpath /data/db
+    command: --wiredTigerCacheSizeGB=2 --dbpath /data/db
