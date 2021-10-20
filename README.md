@@ -58,6 +58,7 @@ use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
 
+
 ## Database management
 ### Automate backup process
 Add the following to the crontab for each database you want to have backed up
