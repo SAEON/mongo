@@ -43,11 +43,10 @@ chmod 755 /opt/deploy-docker-stack.sh
 ## Deploy
 Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
 
-## Configure root user
-Configure the root user for the Mongo server
+## Configure DB Server users
+The root user for the database is configured on deployment. Add databases and users for each application manually
 
 ```sh
-docker container exec -it <container name> mongo
-use admin
-db.createUser({user: "root", pwd: "<your very strong password>", roles: ["root"]})
+docker container exec -it <container name> mongosh
+db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
