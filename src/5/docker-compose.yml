@@ -22,10 +22,10 @@ services:
         window: 120s
       resources:
         limits:
-          cpus: '4'
-          memory: 3G
+          cpus: '8'
+          memory: 4G
         reservations:
-          cpus: '0.25'
+          cpus: '2'
           memory: 1G    
     environment:
       - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE

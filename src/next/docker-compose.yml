@@ -22,10 +22,10 @@ services:
         window: 120s
       resources:
         limits:
-          cpus: '2'
-          memory: 1.5G
+          cpus: '4'
+          memory: 2G
         reservations:
-          cpus: '0.25'
+          cpus: '1'
           memory: 500M    
     environment:
       - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE
@@ -39,4 +39,4 @@ services:
       - 27119:27019
     networks:
       - mongo_next
-    command: --wiredTigerCacheSizeGB=2 --dbpath /data/db
+    command: --wiredTigerCacheSizeGB=1 --dbpath /data/db
