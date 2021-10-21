@@ -24,9 +24,6 @@ services:
         limits:
           cpus: '4'
           memory: 2G
-        reservations:
-          cpus: '1'
-          memory: 500M    
     environment:
       - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
