@@ -66,10 +66,13 @@ Add the following to the crontab for each database you want to have backed up
 
 ```
 # Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
-0 0 * * * docker run --net=<Docker network> -v /opt/dbak:/dbak --rm mongo:5.0.2 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
+0 0 * * * docker run --net=<Docker network> -v /opt/dbak:/dbak --rm mongo:5.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
 
 # Prune backups older than 90 days
 0 0 * * 0 find /opt/dbak/ -mtime + 90 -type -f -delete
+
+# Prune docker system
+0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
 ```
 
 ### Taking and restoring backups
