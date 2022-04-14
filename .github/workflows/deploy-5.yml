@@ -2,8 +2,8 @@ name: deployment@5
 
 on:
   push:
-    branches:
-      - 5
+    tags:
+      - v5*
 
 jobs:
   deploy:

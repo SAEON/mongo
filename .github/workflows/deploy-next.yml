@@ -2,8 +2,8 @@ name: deployment@next
 
 on:
   push:
-    branches:
-      - next
+    tags:
+      - vNext*
 
 jobs:
   deploy:
