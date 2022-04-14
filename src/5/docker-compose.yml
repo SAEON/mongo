@@ -12,7 +12,7 @@ volumes:
 
 services:
   mongo_5:
-    image: mongo:5.0.3
+    image: mongo:5.0.7
     deploy:
       replicas: 1
       rollback_config:
@@ -23,7 +23,7 @@ services:
         failure_action: rollback
       restart_policy:
         condition: any
-        delay: 5s
+        delay: 30s
       resources:
         limits:
           cpus: '8'
