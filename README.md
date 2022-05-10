@@ -1,7 +1,41 @@
 # Mongo
 SAEON's MongoDB servers
 
-## Server setup
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Local development](#local-development)
+- [Server setup](#server-setup)
+  - [Setup a limited permissions user called 'runner' and configure SSH login from the github-runner.saeon.int server](#setup-a-limited-permissions-user-called-runner-and-configure-ssh-login-from-the-github-runnersaeonint-server)
+  - [Server administration](#server-administration)
+- [Deploy](#deploy)
+- [Database management](#database-management)
+  - [Configure DB Server users](#configure-db-server-users)
+  - [Configure backups](#configure-backups)
+    - [Take a backup](#take-a-backup)
+    - [Restore a backup](#restore-a-backup)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Local development
+These easiest way to setup the MongoDB server on a local machine is via a Docker container
+
+```sh
+docker network create --driver bridge mongo
+
+docker run \
+  --name mongo \
+  --net=mongo \
+  --restart always \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=password \
+  -d \
+  mongo:5.0.8
+```
+
+# Server setup
 
 - [Install Docker Engine](https://docs.docker.com/engine/install/centos/)
 - [Init Docker Swarm mode](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/) (using a single node - Swarm mode allows setting service usage limits on CPU and memory)
@@ -48,9 +82,10 @@ Add the following to the root crontab
 0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
 ```
 
-## Deploy
+# Deploy
 Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
 
+# Database management
 ## Configure DB Server users
 The root user for the database is configured on deployment. Add databases and users for each application manually
 
@@ -60,8 +95,7 @@ use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
 
-## Database management
-### Automate backup process
+## Configure backups
 Add the following to the crontab for each database you want to have backed up
 
 ```
@@ -75,8 +109,7 @@ Add the following to the crontab for each database you want to have backed up
 0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
 ```
 
-### Taking and restoring backups
-#### Take a backup
+### Take a backup
 ```sh
 # Navigate to home directory as a non-root uer
 # (so that the dynamic volume mount works)
@@ -100,7 +133,7 @@ docker run \
     /mongo-bak/mongo-backup.archive"
 ```
 
-#### Restore a backup
+### Restore a backup
 This command assumes a backup taken with the above command
 ```sh
 # Navigate to home directory as a non-root uer
