@@ -76,6 +76,7 @@ chown root /opt/deploy-docker-stack.sh
 chmod 755 /opt/deploy-docker-stack.sh
 ```
 
+<<<<<<< HEAD
 ## Server administration
 Add the following to the root crontab
 ```
@@ -83,6 +84,9 @@ Add the following to the root crontab
 ```
 
 # Deploy
+=======
+## Deploy
+>>>>>>> 6c276f860dfe7aa6dd668da03c99b472c38f59dd
 Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
 
 # Database management
@@ -95,7 +99,12 @@ use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
 
+<<<<<<< HEAD
 ## Configure backups
+=======
+## Server/Database management
+### Automate backup process
+>>>>>>> 6c276f860dfe7aa6dd668da03c99b472c38f59dd
 Add the following to the crontab for each database you want to have backed up
 
 ```
@@ -103,7 +112,7 @@ Add the following to the crontab for each database you want to have backed up
 0 0 * * * docker run --net=<Docker network> -v /opt/dbak:/dbak --rm mongo:5.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
 
 # Prune backups older than 90 days
-0 0 * * 0 find /opt/dbak/ -mtime + 90 -type -f -delete
+0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
 
 # Prune docker system
 0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
