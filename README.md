@@ -76,7 +76,6 @@ chown root /opt/deploy-docker-stack.sh
 chmod 755 /opt/deploy-docker-stack.sh
 ```
 
-<<<<<<< HEAD
 ## Server administration
 Add the following to the root crontab
 ```
@@ -84,9 +83,7 @@ Add the following to the root crontab
 ```
 
 # Deploy
-=======
 ## Deploy
->>>>>>> 6c276f860dfe7aa6dd668da03c99b472c38f59dd
 Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
 
 # Database management
@@ -99,12 +96,8 @@ use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
 
-<<<<<<< HEAD
-## Configure backups
-=======
 ## Server/Database management
 ### Automate backup process
->>>>>>> 6c276f860dfe7aa6dd668da03c99b472c38f59dd
 Add the following to the crontab for each database you want to have backed up
 
 ```
