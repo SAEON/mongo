@@ -32,7 +32,7 @@ docker run \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
   -e MONGO_INITDB_ROOT_PASSWORD=password \
   -d \
-  mongo:5.0.8
+  mongo:5.0.12
 ```
 
 # Server setup
