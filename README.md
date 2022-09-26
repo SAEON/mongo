@@ -22,11 +22,11 @@ SAEON's MongoDB servers
 These easiest way to setup the MongoDB server on a local machine is via a Docker container
 
 ```sh
-docker network create --driver bridge mongo
+docker network create --driver bridge saeon_local
 
 docker run \
   --name mongo \
-  --net=mongo \
+  --net=saeon_local \
   --restart always \
   -p 27017:27017 \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
@@ -102,7 +102,7 @@ Add the following to the crontab for each database you want to have backed up
 
 ```
 # Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
-0 0 * * * docker run --net=<Docker network> -v /opt/dbak:/dbak --rm mongo:5.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
+0 0 * * * docker run --net=saeon_local -v /opt/dbak:/dbak --rm mongo:5.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
 
 # Prune backups older than 90 days
 0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
@@ -118,7 +118,7 @@ Add the following to the crontab for each database you want to have backed up
 cd ~
 
 docker run \
-  --net=<mongo container network> \
+  --net=saeon_local \
   -v /home/$USER:/mongo-bak \
   --rm \
   <mongo image name>
@@ -144,7 +144,7 @@ cd ~
 
 docker run \
   -i \
-  --net=<mongo container network>  \
+  --net=saeon_local  \
   -v /home/$USER:/mongo-bak \
   --rm \
   <mongo image name> \
