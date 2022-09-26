@@ -22,15 +22,20 @@ SAEON's MongoDB servers
 These easiest way to setup the MongoDB server on a local machine is via a Docker container
 
 ```sh
+mkdir /home/$USER/mongo
+
 docker network create --driver bridge saeon_local
 
 docker run \
   --name mongo \
   --net=saeon_local \
   --restart always \
+  --memory 1.5g \
+  --cpus 2 \
   -p 27017:27017 \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
   -e MONGO_INITDB_ROOT_PASSWORD=password \
+  -v /home/$USER/mongo:/data/db \
   -d \
   mongo:5.0.12
 ```
