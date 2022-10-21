@@ -37,7 +37,7 @@ docker run \
   -e MONGO_INITDB_ROOT_PASSWORD=password \
   -v /home/$USER/mongo:/data/db \
   -d \
-  mongo:5.0.12
+  mongo:6.0.2
 ```
 
 # Server setup
