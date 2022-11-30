@@ -49,4 +49,4 @@ jobs:
             echo "MONGO_INITDB_DATABASE=${{ env.MONGO_INITDB_DATABASE }}" > /home/runner/mongo/${{ env.STACK }}/stack.env
             echo "MONGO_INITDB_ROOT_USERNAME=${{ env.MONGO_INITDB_ROOT_USERNAME }}" >> /home/runner/mongo/${{ env.STACK }}/stack.env
             echo "MONGO_INITDB_ROOT_PASSWORD=${{ env.MONGO_INITDB_ROOT_PASSWORD }}" >> /home/runner/mongo/${{ env.STACK }}/stack.env
-            sudo /opt/deploy-docker-stack.sh /home/runner/mongo/${{ env.STACK }}/stack.yml /home/runner/mongo/${{ env.STACK }}/stack.env mongo_6
+            sudo /opt/deploy-docker-stack.sh /home/runner/mongo/${{ env.STACK }}/stack.yml /home/runner/mongo/${{ env.STACK }}/stack.env mongo_${{ env.STACK }}
