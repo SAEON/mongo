@@ -1,5 +1,5 @@
 # Mongo
-SAEON's MongoDB servers
+SAEON's MongoDB instances
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -7,12 +7,12 @@ SAEON's MongoDB servers
 
 - [Local development](#local-development)
 - [Server setup](#server-setup)
-  - [Setup a limited permissions user called 'runner' and configure SSH login from the github-runner.saeon.int server](#setup-a-limited-permissions-user-called-runner-and-configure-ssh-login-from-the-github-runnersaeonint-server)
-  - [Server administration](#server-administration)
 - [Deploy](#deploy)
+  - [Deploy](#deploy-1)
 - [Database management](#database-management)
   - [Configure DB Server users](#configure-db-server-users)
-  - [Configure backups](#configure-backups)
+  - [Server/Database management](#serverdatabase-management)
+    - [Automate backup process](#automate-backup-process)
     - [Take a backup](#take-a-backup)
     - [Restore a backup](#restore-a-backup)
 
@@ -37,59 +37,15 @@ docker run \
   -e MONGO_INITDB_ROOT_PASSWORD=password \
   -v /home/$USER/mongo:/data/db \
   -d \
-  mongo:6.0.2
+  mongo:6.0.3
 ```
 
 # Server setup
-
-- [Install Docker Engine](https://docs.docker.com/engine/install/centos/)
-- [Init Docker Swarm mode](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/) (using a single node - Swarm mode allows setting service usage limits on CPU and memory)
-
-## Setup a limited permissions user called 'runner' and configure SSH login from the github-runner.saeon.int server
-```sh
-sudo su
-adduser runner
-passwd runner # Enter a strong password, and add this password as a repository secret
-```
-
-The `runner` user needs to be able to run `docker`, but should not be in the `docker` group
-
-```sh
-visudo
-
-# Add this line to the bottom of the visudo file
-runner ALL=NOPASSWD: /opt/deploy-docker-stack.sh
-```
-
-Create the deploy script `/opt/deploy-docker-stack.sh` with the following content
-
-```sh
-#!/bin/sh
-
-echo "Compose file: $1"
-echo "Compose env file $2"
-echo "Deploying stack: $3"
-
-export $(cat $2) > /dev/null 2>&1;
-docker stack deploy -c $1 $3
-```
-
-Make sure the script has the correct permissions
-
-```sh
-chown root /opt/deploy-docker-stack.sh 
-chmod 755 /opt/deploy-docker-stack.sh
-```
-
-## Server administration
-Add the following to the root crontab
-```
-0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
-```
+Refer to [server-deployment documentation](https://github.com/SAEON/deployment-platform#mongosaeonint)
 
 # Deploy
 ## Deploy
-Push to relevant branch to trigger server deployment, or to `main` branch to update the repo without triggering a deployment 
+Deploy via GitHub Actions workflow_dispatch triggers
 
 # Database management
 ## Configure DB Server users
@@ -107,7 +63,7 @@ Add the following to the crontab for each database you want to have backed up
 
 ```
 # Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
-0 0 * * * docker run --net=saeon_local -v /opt/dbak:/dbak --rm mongo:5.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
+0 0 * * * docker run --net=saeon_local -v /opt/dbak:/dbak --rm mongo:6.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
 
 # Prune backups older than 90 days
 0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
@@ -121,23 +77,23 @@ Add the following to the crontab for each database you want to have backed up
 # Navigate to home directory as a non-root uer
 # (so that the dynamic volume mount works)
 cd ~
-
+IMAGE=mongo:6.0.3
 docker run \
   --net=saeon_local \
   -v /home/$USER:/mongo-bak \
   --rm \
-  <mongo image name>
-  sh -c \
-  "mongodump \
-    --uri=mongodb://<container id>:27017 \
-    -u=root \
-    -p=<password> \
-    --authenticationDatabase=admin \
-    -d=<database> \
-    --archive \
-    --gzip \
-    > \
-    /mongo-bak/mongo-backup.archive"
+  $IMAGE \
+    sh -c \
+    "mongodump \
+      --uri=mongodb://<container id>:27017 \
+      -u=root \
+      -p=<password> \
+      --authenticationDatabase=admin \
+      -d=<database> \
+      --archive \
+      --gzip \
+      > \
+      /mongo-bak/mongo-backup.archive"
 ```
 
 ### Restore a backup
@@ -146,22 +102,22 @@ This command assumes a backup taken with the above command
 # Navigate to home directory as a non-root uer
 # (so that the dynamic volume mount works)
 cd ~
-
+IMAGE=mongo:6.0.3
 docker run \
   -i \
   --net=saeon_local  \
   -v /home/$USER:/mongo-bak \
   --rm \
-  <mongo image name> \
+  $IMAGE \
   sh -c \
-  "mongorestore \
-    --uri=mongodb://<container id>:27017 \
-    -u=root \
-    -p=<password> \
-    --authenticationDatabase=admin \
-    --gzip \
-    --archive=/mongo-bak/mongo-backup.archive \
-    --nsFrom=<from db in bak>.* \
-    --nsInclude=<from db in bak>.* \
-    --nsTo=<target db>.*" 
+    "mongorestore \
+      --uri=mongodb://<container id>:27017 \
+      -u=root \
+      -p=<password> \
+      --authenticationDatabase=admin \
+      --gzip \
+      --archive=/mongo-bak/mongo-backup.archive \
+      --nsFrom=<from db in bak>.* \
+      --nsInclude=<from db in bak>.* \
+      --nsTo=<target db>.*" 
 ```

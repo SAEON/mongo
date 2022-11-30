@@ -1,18 +1,18 @@
 version: '3.8'
 
 networks:
-  mongo_5:
-    name: mongo_5
+  mongo_next:
+    name: mongo_next
     driver: overlay
     attachable: true
 
 volumes:
-  mongo_5:
+  mongo_next:
     driver: local
 
 services:
-  mongo_5:
-    image: mongo:5.0.8
+  mongo_next:
+    image: mongo:6.0.3
     deploy:
       replicas: 1
       rollback_config:
@@ -26,21 +26,18 @@ services:
         delay: 30s
       resources:
         limits:
-          cpus: '8'
-          memory: 4G
-        reservations:
-          cpus: '2'
-          memory: 1G    
+          cpus: '4'
+          memory: 2G
     environment:
       - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
     volumes:
-      - mongo_5:/data/db/
+      - mongo_next:/data/db/
     ports:
-      - 27217:27017
-      - 27218:27018
-      - 27219:27019
+      - 27117:27017
+      - 27118:27018
+      - 27119:27019
     networks:
-      - mongo_5
-    command: --wiredTigerCacheSizeGB=2 --dbpath /data/db
+      - mongo_next
+    command: --wiredTigerCacheSizeGB=1 --dbpath /data/db
