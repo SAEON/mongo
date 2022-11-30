@@ -1,7 +1,7 @@
 name: Deploy MongoDB
 
 on:
-  workflow_dispach:
+  workflow_dispatch:
     inputs:
       stack:
         description: The stack to be deployed. vNext (default) or v6
