@@ -52,7 +52,7 @@ Deploy via GitHub Actions workflow_dispatch triggers
 The root user for the database is configured on deployment. Add databases and users for each application manually
 
 ```sh
-docker container exec -it 2212 mongosh -u root -p <root password> --authenticationDatabase admin
+docker container exec -it <container id> mongosh -u root -p <root password> --authenticationDatabase admin
 use admin # Users need to be created in the admin database
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
