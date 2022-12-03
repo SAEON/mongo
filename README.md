@@ -48,7 +48,7 @@ Refer to [server-deployment documentation](https://github.com/SAEON/deployment-p
 Deploy via GitHub Actions workflow_dispatch triggers
 
 # Database management
-## Configure DB Server users
+## Add users
 The root user for the database is configured on deployment. Add databases and users for each application manually
 
 ```sh
