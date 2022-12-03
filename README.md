@@ -7,8 +7,7 @@ SAEON's MongoDB instances
 
 - [Local development](#local-development)
 - [Server setup](#server-setup)
-- [Deploy](#deploy)
-  - [Deploy](#deploy-1)
+  - [Deploy](#deploy)
 - [Database management](#database-management)
   - [Add users](#add-users)
   - [Take a backup](#take-a-backup)
@@ -42,7 +41,6 @@ docker run \
 # Server setup
 Refer to [server-deployment documentation](https://github.com/SAEON/deployment-platform#mongosaeonint)
 
-# Deploy
 ## Deploy
 Deploy via GitHub Actions workflow_dispatch triggers
 
