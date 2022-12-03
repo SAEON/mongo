@@ -11,10 +11,9 @@ SAEON's MongoDB instances
   - [Deploy](#deploy-1)
 - [Database management](#database-management)
   - [Add users](#add-users)
-  - [Server/Database management](#serverdatabase-management)
+  - [Take a backup](#take-a-backup)
     - [Automate backup process](#automate-backup-process)
-    - [Take a backup](#take-a-backup)
-    - [Restore a backup](#restore-a-backup)
+  - [Restore a backup](#restore-a-backup)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -70,22 +69,7 @@ use admin
 db.createUser({user: "<username>", pwd: "<password>", roles: [{role: "dbOwner", db: "<database>"}]})
 ```
 
-## Server/Database management
-### Automate backup process
-Add the following to the crontab for each database you want to have backed up
-
-```
-# Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
-0 0 * * * docker run --net=saeon_local -v /opt/dbak:/dbak --rm mongo:6.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
-
-# Prune backups older than 90 days
-0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
-
-# Prune docker system
-0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
-```
-
-### Take a backup
+## Take a backup
 ```sh
 # Navigate to home directory as a non-root uer
 # (so that the dynamic volume mount works)
@@ -109,8 +93,22 @@ docker run \
       /mongo-bak/mongo-backup.archive"
 ```
 
-### Restore a backup
-This command assumes a backup taken with the above command
+### Automate backup process
+Add the following to the crontab for each database you want to have backed up
+
+```
+# Backup catalogue database daily (00:00) (<database>). NOTE - use the same mongo image as the container
+0 0 * * * docker run --net=saeon_local -v /opt/dbak:/dbak --rm mongo:6.0.3 sh -c "mongodump --uri=mongodb://mongo:27017 -u=root -p=<pswd> --authenticationDatabase=admin -d=<database> --archive --gzip > /dbak/<database>_bak_`date +\%Y-\%m-\%d_\%H-\%M-\%S.archive`" 2>&1
+
+# Prune backups older than 90 days
+0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
+
+# Prune docker system
+0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
+```
+
+## Restore a backup
+This command assumes a backup taken with the backup command above
 ```sh
 # Navigate to home directory as a non-root uer
 # (so that the dynamic volume mount works)
