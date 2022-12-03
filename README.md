@@ -10,7 +10,7 @@ SAEON's MongoDB instances
 - [Deploy](#deploy)
   - [Deploy](#deploy-1)
 - [Database management](#database-management)
-  - [Configure DB Server users](#configure-db-server-users)
+  - [Add users](#add-users)
   - [Server/Database management](#serverdatabase-management)
     - [Automate backup process](#automate-backup-process)
     - [Take a backup](#take-a-backup)
