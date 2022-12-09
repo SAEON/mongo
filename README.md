@@ -100,9 +100,6 @@ Add the following to the crontab for each database you want to have backed up
 
 # Prune backups older than 90 days
 0 0 * * 0 find /opt/dbak/* -mtime +90 -exec rm {} \;
-
-# Prune docker system
-0 0 * * 0 docker system prune -f > /opt/docker-system-clean.log 2>&1
 ```
 
 ## Restore a backup
