@@ -27,7 +27,7 @@ docker network create --driver bridge saeon_local
 docker run \
   --name mongo \
   --net=saeon_local \
-  --restart always \
+  --restart unless-stopped \
   --memory 1.5g \
   --cpus 2 \
   -p 27017:27017 \
