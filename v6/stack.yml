@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 networks:
   mongo_6:
@@ -17,7 +17,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.service == mongo
+          - node.labels.mongo == true
       rollback_config:
         parallelism: 0
       update_config:
@@ -29,11 +29,11 @@ services:
         delay: 30s
       resources:
         limits:
-          cpus: '8'
+          cpus: "8"
           memory: 4G
         reservations:
-          cpus: '2'
-          memory: 1G    
+          cpus: "2"
+          memory: 1G
     environment:
       - MONGO_INITDB_DATABASE=$MONGO_INITDB_DATABASE
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
